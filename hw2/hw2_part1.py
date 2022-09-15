@@ -33,9 +33,13 @@ def drew_retangle(id):
     right = 0
     top = row
     left = col
+    cen_i = []
+    cen_j = []
     for i in range(row):
         for j in range(col):
             if(label_id[i, j] == id):
+                cen_i.append(i)
+                cen_j.append(j)
                 if(i < top):
                     top = i
                 elif(i > down):
@@ -44,8 +48,14 @@ def drew_retangle(id):
                     left = j
                 elif(j > right):
                     right = j
-    cv.rectangle(image3, (left, top), (right, down), (0, 255, 0), 2)
-    
+    cv.rectangle(image3, (left, top), (right, down), (0, 255, 0), 2) #draw retangle
+    #畫重心
+    center_i = sum(cen_i) / len(cen_i)
+    center_j = sum(cen_j) / len(cen_j)
+    center_i = int(center_i)
+    center_j = int(center_j)
+    cv.line(image3, (center_j - 8, center_i), (center_j + 8, center_i), (0, 255, 0), 2) #橫線
+    cv.line(image3, (center_j, center_i - 8), (center_j, center_i + 8), (0, 255, 0), 2) #直線
       
 #show oringinal image
 image = cv.imread('lena.bmp')
@@ -122,7 +132,7 @@ for i in range(1, row * col):
 for i in area:
     drew_retangle(i) 
 
-cv.imshow('binary image', image3)
+cv.imshow('part3', image3)
 cv.waitKey(0)
 
                 
