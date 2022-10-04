@@ -179,13 +179,13 @@ def connectShirnk(origin_image, pair_image):
         return f(a1, a2, a3, a4, x0)
                 
     row, col = origin_image.shape
-    origin_image = origin_image.copy()
+    result = origin_image.copy()
     for i in range(row):
         for j in range(col):
             # pair_image[i, j] == 2 means not edge in yokoi image
             if origin_image[i][j] > 0 and pair_image[i][j] != 2: 
-                origin_image[i][j] = calculate(origin_image, i, j)
-    return origin_image
+                result[i][j] = calculate(result, i, j)
+    return result
 
 
 # main
