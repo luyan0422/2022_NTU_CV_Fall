@@ -55,8 +55,6 @@ plt.imshow(image_dilation, cmap = 'gray')
 plt.title('image dilation')
 plt.show()
 #print(type(image_dilation[0,0])) >> <class 'numpy.float64'>
-cv.imshow('lena', image_dilation)
-cv.waitKey(0)
 
 image_erosion = erosion(image1, kernel)
 plt.imshow(image_erosion, cmap = 'gray')
