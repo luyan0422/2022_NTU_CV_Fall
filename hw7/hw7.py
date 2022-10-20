@@ -97,7 +97,7 @@ def pair(origin_image, yokoi_image):
             else:
                 return 0
         #assume p = 1 and q = 2
-        if yokoi_image[i][j] != 1:
+        if yokoi_image[i][j] != 1: #not edge in yokoi image
             return 2
         else:
             x1, x2, x3, x4 = 0, 0, 0, 0
@@ -192,7 +192,6 @@ def connectShirnk(origin_image, pair_image):
 image = cv.imread('lena.bmp', cv.IMREAD_GRAYSCALE)
 image = dump(image_bin(image, 128)) # 先二值化在取sample
 row, col = image.shape
-print("image")
 
 while True:
     old = image.copy()
