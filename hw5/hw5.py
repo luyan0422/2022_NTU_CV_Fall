@@ -22,7 +22,7 @@ def dilation(image, kernel):
                 if ki + i >= 0 and ki + i < row and kj + j >= 0 and kj + j < col: #在範圍內的點
                     max_v = max(max_v, image[ki + i, kj + j])
             new_image[i, j] = max_v
-
+    print(type(new_image[0,0]))
     return new_image
 
 def erosion(image, kernel):
@@ -49,11 +49,14 @@ def closing(image, kernel):
 image1 = cv.imread('lena.bmp',cv.IMREAD_GRAYSCALE)
 cv.imshow('lena', image1)
 cv.waitKey(0)
-
+#print(type(image1[0,0]))  >>  <class 'numpy.uint8'>
 image_dilation = dilation(image1, kernel)
 plt.imshow(image_dilation, cmap = 'gray')
 plt.title('image dilation')
 plt.show()
+#print(type(image_dilation[0,0])) >> <class 'numpy.float64'>
+cv.imshow('lena', image_dilation)
+cv.waitKey(0)
 
 image_erosion = erosion(image1, kernel)
 plt.imshow(image_erosion, cmap = 'gray')
