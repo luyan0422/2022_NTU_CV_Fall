@@ -62,10 +62,10 @@ def frei_and_chen(image, threshold):
     row, col = image.shape
     for i in range(1, row + 1):
         for j in range(1, col + 1):
-            r1 = -1 * (int(pad[i - 1, j - 1]) + int(pad[i - 1, j]) ** 0.5 + int(pad[i - 1, j + 1])) + \
-                (int(pad[i + 1, j - 1]) + int(pad[i + 1, j]) ** 0.5 + int(pad[i + 1, j + 1]))
-            r2 = -1 * (int(pad[i - 1, j - 1]) + int(pad[i, j - 1]) ** 0.5 + int(pad[i + 1, j - 1])) + \
-                (int(pad[i - 1, j + 1]) + int(pad[i, j + 1]) ** 0.5 + int(pad[i + 1, j + 1]))
+            r1 = -1 * (int(pad[i - 1, j - 1]) + int(pad[i - 1, j]) * (2 ** 0.5) + int(pad[i - 1, j + 1])) + \
+                (int(pad[i + 1, j - 1]) + int(pad[i + 1, j]) * (2 ** 0.5) + int(pad[i + 1, j + 1]))
+            r2 = -1 * (int(pad[i - 1, j - 1]) + int(pad[i, j - 1]) * (2 ** 0.5) + int(pad[i + 1, j - 1])) + \
+                (int(pad[i - 1, j + 1]) + int(pad[i, j + 1]) * (2 ** 0.5) + int(pad[i + 1, j + 1]))
             if(pow(r1, 2) + pow(r2, 2)) ** 0.5 >= threshold:
                 frei_and_chen_img[i - 1][j - 1] = 0
             else:
@@ -106,9 +106,6 @@ def krisch(image, threshold):
         [-3, 0, 5],
         [-3, 5, 5]])
     kernels = [k0, k1, k2, k3, k4, k5, k6, k7]
-    directions = np.array([[-1, -1], [-1, 0],[-1, 1],
-                  [0, -1],[0, 0],[0, 1],
-                  [1, -1],[1, 0],[1, 1]])
     pad = cv.copyMakeBorder(image, 1, 1, 1, 1, cv.BORDER_REPLICATE) #pad_around
     krisch_img = image.copy()
     row, col = image.shape
@@ -116,15 +113,10 @@ def krisch(image, threshold):
         for j in range(1, col + 1):
             max = 0
             flag = 0
-            tmp = np.zeros((3, 3))
-            for k in range(3):
-                for m in range(3):
-                    dx = directions[3 * k + (m + 1) - 1 , 0]
-                    dy = directions[3 * k + (m + 1) - 1, 1]
-                    tmp[k, m] = pad[i + dx, j + dy]
             for kernel in kernels:
-                if(matrix_mul(tmp, kernel) > max):
-                    max = matrix_mul(tmp, kernel)
+                r = np.sum(kernel * pad[i - 1 : i + 2, j - 1 : j + 2])
+                if r > max:
+                    max = r
                     if(max >= threshold):
                         flag = 1
                         break
@@ -168,9 +160,6 @@ def robinson(image, threshold):
         [-1, 0, 1],
         [0, 1, 2]])
     kernels = [r0, r1, r2, r3, r4, r5, r6, r7]
-    directions = np.array([[-1, -1], [-1, 0],[-1, 1],
-                  [0, -1],[0, 0],[0, 1],
-                  [1, -1],[1, 0],[1, 1]])
     pad = cv.copyMakeBorder(image, 1, 1, 1, 1, cv.BORDER_REPLICATE) #pad_around
     robinson_img = image.copy()
     row, col = image.shape
@@ -178,15 +167,10 @@ def robinson(image, threshold):
         for j in range(1, col + 1):
             max = 0
             flag = 0
-            tmp = np.zeros((3, 3))
-            for k in range(3):
-                for m in range(3):
-                    dx = directions[3 * k + (m + 1) - 1 , 0]
-                    dy = directions[3 * k + (m + 1) - 1, 1]
-                    tmp[k, m] = pad[i + dx, j + dy]
             for kernel in kernels:
-                if(matrix_mul(tmp, kernel) > max):
-                    max = matrix_mul(tmp, kernel)
+                r = np.sum(kernel * pad[i - 1 : i + 2, j - 1 : j + 2])
+                if r > max:
+                    max = r
                     if(max >= threshold):
                         flag = 1
                         break
@@ -234,12 +218,6 @@ def nevatia_babu(image, threshold):
         [-100, -100, -100, -78, 32],
         [-100, -100, -100, -100, -100]])
     kernels = [n0, n1, n2, n3, n4, n5]
-    directions = np.array([
-        [-2, -2],[-2, -1],[-2, 0],[-2, 1],[-2, 2],
-        [-1, -2],[-1, -1], [-1, 0],[-1, 1],[-1, 2],
-        [0, -2],[0, -1],[0, 0],[0, 1],[0, 2],
-        [1, -2],[1, -1],[1, 0],[1, 1],[1, 2],
-        [2, -2],[2, -1],[2, 0],[2, 1],[2, 2]])
     pad = cv.copyMakeBorder(image, 2, 2, 2, 2, cv.BORDER_REPLICATE) #pad_around
     nevatia_img = image.copy()
     row, col = image.shape
@@ -247,15 +225,10 @@ def nevatia_babu(image, threshold):
         for j in range(2, col + 2):
             max = 0
             flag = 0
-            tmp = np.zeros((5, 5))
-            for k in range(5):
-                for m in range(5):
-                    dx = directions[5 * k + (m + 1) - 1 , 0]
-                    dy = directions[5 * k + (m + 1) - 1, 1]
-                    tmp[k, m] = pad[i + dx, j + dy]
             for kernel in kernels:
-                if(matrix_mul(tmp, kernel) > max):
-                    max = matrix_mul(tmp, kernel)
+                r = np.sum(kernel * pad[i - 2 : i + 3, j - 2 : j + 3])
+                if r > max:
+                    max = r
                     if(max >= threshold):
                         flag = 1
                         break
@@ -274,13 +247,13 @@ krisch_img = krisch(img, 135)
 robinson_img = robinson(img, 43)
 nevatia_img = nevatia_babu(img, 12500)
 
-cv.imwrite('robert.bmp', robert_img)
-cv.imwrite('prewitt.bmp', prewitt_img)
-cv.imwrite('sobel.bmp', sobel_img)
-cv.imwrite('frei_and_chen.bmp', frei_and_chen_img)
-cv.imwrite('krisch.bmp', krisch_img)
-cv.imwrite('robinson.bmp', robinson_img)
-cv.imwrite('nevatia.bmp', nevatia_img)
+cv.imwrite('results/robert.jpg', robert_img)
+cv.imwrite('results/prewitt.jpg', prewitt_img)
+cv.imwrite('results/sobel.jpg', sobel_img)
+cv.imwrite('results/frei_and_chen.jpg', frei_and_chen_img)
+cv.imwrite('results/krisch.jpg', krisch_img)
+cv.imwrite('results/robinson.jpg', robinson_img)
+cv.imwrite('results/nevatia.jpg', nevatia_img)
 
 cv.imshow('robert', robert_img)
 cv.imshow('prewitt', prewitt_img)
