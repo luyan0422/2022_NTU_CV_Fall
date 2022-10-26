@@ -141,17 +141,20 @@ fig4 = [ps005, b3ps005, m3ps005, ocps005, b5ps005, m5ps005, cops005]
 together = [fig1, fig2, fig3, fig4]
 title = ['box filter 3x3', 'median filter 3x3', 'opening then closing', 'box filter 5x5', 'median filter 5x5', 'closing then opening']
 together_title = ['guaasian 10', 'guaasian 30', 'pepper and salt 0.1', 'pepper and salt 0.05']
+
 for i in range(4):
+    fig = plt.figure(figsize = (12, 8))
     for j in range(7):
         outout_image = together[i][j]
         if j == 0:
-            plt.subplot(n, m, 2)
+            fig.add_subplot(n, m, 2)
             plt.imshow(outout_image, cmap = 'gray')
             plt.title("{}\nsnr = {}".format(together_title[i], snr(img, outout_image)))
         else:
-            plt.subplot(n, m, j + 3)
+            fig.add_subplot(n, m, j + 3)
             plt.imshow(outout_image, cmap = 'gray')
             plt.title("{}  snr = {:.6f}".format(title[j - 1], snr(img, outout_image)))
         plt.xticks([])
         plt.yticks([])
+    plt.savefig('results/{}.jpg'.format(together_title[i]))
     plt.show()
